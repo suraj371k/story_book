@@ -12,7 +12,8 @@ const DesignSystemDemo = () => {
   const { theme, toggleTheme } = useTheme();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+  const [modalSize, setModalSize] = useState<'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full'>('sm');
+
   const showToast = (variant: 'default' | 'info' | 'success' | 'warning' | 'error') => {
     const toastMap = {
       default: {
@@ -215,6 +216,7 @@ const DesignSystemDemo = () => {
                   isOpen={isModalOpen}
                   onClose={() => setIsModalOpen(false)}
                   title="Modal Title"
+                  size={modalSize}
                   description="This is a description for the modal dialog that provides more context."
                   footer={
                     <div className="flex justify-end space-x-2">

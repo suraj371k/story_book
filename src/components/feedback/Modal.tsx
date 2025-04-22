@@ -1,27 +1,27 @@
-import React, { Fragment, useRef, useEffect } from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '../../utils/cn';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
-import { Button } from '../inputs/Button';
-import { Heading } from '../typography/Typography';
+import React, { Fragment, useRef, useEffect } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "../../utils/cn";
+import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
+import { Button } from "../inputs/Button";
+import { Heading } from "../typography/Typography";
 
 // Modal variants
 const modalVariants = cva(
-  'relative mx-auto overflow-y-auto rounded-lg bg-white dark:bg-neutral-800 shadow-lg',
+  "relative mx-auto overflow-y-auto rounded-lg bg-white dark:bg-neutral-800 shadow-lg",
   {
     variants: {
       size: {
-        sm: 'max-w-sm',
-        md: 'max-w-md',
-        lg: 'max-w-lg',
-        xl: 'max-w-xl',
-        '2xl': 'max-w-2xl',
-        full: 'w-full h-full max-w-full m-0 rounded-none',
+        sm: "max-w-sm",
+        md: "max-w-md",
+        lg: "max-w-lg",
+        xl: "max-w-xl",
+        "2xl": "max-w-2xl",
+        full: "w-full h-full max-w-full m-0 rounded-none",
       },
     },
     defaultVariants: {
-      size: 'md',
+      size: "md",
     },
   }
 );
@@ -41,6 +41,7 @@ export interface ModalProps extends VariantProps<typeof modalVariants> {
   bodyClassName?: string;
   footerClassName?: string;
   initialFocus?: React.RefObject<HTMLElement>;
+  size?: "sm" | "md" | "lg" | "xl" | "2xl" | "full";
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -53,7 +54,7 @@ export const Modal: React.FC<ModalProps> = ({
   closeOnOverlayClick = true,
   closeOnEscape = true,
   showCloseButton = true,
-  size,
+  size = 'md',
   overlayClassName,
   contentClassName,
   bodyClassName,
@@ -61,27 +62,27 @@ export const Modal: React.FC<ModalProps> = ({
   initialFocus,
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  
+
   // Handle ESC key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen && closeOnEscape) {
+      if (e.key === "Escape" && isOpen && closeOnEscape) {
         onClose();
       }
     };
-    
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose, closeOnEscape]);
-  
+
   // Trap focus inside modal
   useEffect(() => {
     if (!isOpen) return;
-    
+
     const contentElement = contentRef.current;
-    
+
     if (!contentElement) return;
-    
+
     // Focus the initial element or the content div
     const elementToFocus = initialFocus?.current || contentElement;
     if (elementToFocus) {
@@ -92,21 +93,41 @@ export const Modal: React.FC<ModalProps> = ({
         }
       }, 100);
     }
-    
+
     // Prevent scrolling when modal is open
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [isOpen, initialFocus]);
-  
+
   // Handle overlay click
   const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget && closeOnOverlayClick) {
       onClose();
     }
   };
+
+  const getSizeClass = (size: ModalProps['size']) => {
+    switch (size) {
+      case 'sm':
+        return 'max-w-sm';
+      case 'md':
+        return 'max-w-md';
+      case 'lg':
+        return 'max-w-lg';
+      case 'xl':
+        return 'max-w-xl';
+      case '2xl':
+        return 'max-w-2xl';
+      case 'full':
+        return 'max-w-full';
+      default:
+        return 'max-w-md';
+    }
+  };
   
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -118,8 +139,9 @@ export const Modal: React.FC<ModalProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className={cn(
-              'fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm',
-              overlayClassName
+              "fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm",
+              overlayClassName,
+              getSizeClass(size)
             )}
             onClick={handleOverlayClick}
             aria-hidden="true"
@@ -135,8 +157,8 @@ export const Modal: React.FC<ModalProps> = ({
               className={cn(modalVariants({ size }), contentClassName)}
               role="dialog"
               aria-modal="true"
-              aria-labelledby={title ? 'modal-title' : undefined}
-              aria-describedby={description ? 'modal-description' : undefined}
+              aria-labelledby={title ? "modal-title" : undefined}
+              aria-describedby={description ? "modal-description" : undefined}
               tabIndex={-1}
             >
               {/* Close Button */}
@@ -150,31 +172,41 @@ export const Modal: React.FC<ModalProps> = ({
                   <X size={18} />
                 </button>
               )}
-              
+
               {/* Header */}
               {(title || description) && (
                 <div className="px-6 pt-6 pb-0">
                   {title && (
-                    <Heading level="h3" id="modal-title" className="text-xl font-semibold mb-2">
+                    <Heading
+                      level="h3"
+                      id="modal-title"
+                      className="text-xl font-semibold mb-2"
+                    >
                       {title}
                     </Heading>
                   )}
                   {description && (
-                    <p id="modal-description" className="text-neutral-600 dark:text-neutral-400">
+                    <p
+                      id="modal-description"
+                      className="text-neutral-600 dark:text-neutral-400"
+                    >
                       {description}
                     </p>
                   )}
                 </div>
               )}
-              
+
               {/* Body */}
-              <div className={cn('p-6', bodyClassName)}>
-                {children}
-              </div>
-              
+              <div className={cn("p-6", bodyClassName)}>{children}</div>
+
               {/* Footer */}
               {footer && (
-                <div className={cn('px-6 py-4 bg-neutral-50 dark:bg-neutral-900 rounded-b-lg border-t border-neutral-200 dark:border-neutral-700', footerClassName)}>
+                <div
+                  className={cn(
+                    "px-6 py-4 bg-neutral-50 dark:bg-neutral-900 rounded-b-lg border-t border-neutral-200 dark:border-neutral-700",
+                    footerClassName
+                  )}
+                >
                   {footer}
                 </div>
               )}
@@ -197,12 +229,15 @@ export const ModalHeader: React.FC<ModalHeaderProps> = ({
   description,
   className,
 }) => (
-  <div className={cn('mb-4', className)}>
+  <div className={cn("mb-4", className)}>
     <Heading level="h3" id="modal-title" className="text-xl font-semibold mb-2">
       {title}
     </Heading>
     {description && (
-      <p id="modal-description" className="text-neutral-600 dark:text-neutral-400">
+      <p
+        id="modal-description"
+        className="text-neutral-600 dark:text-neutral-400"
+      >
         {description}
       </p>
     )}
@@ -218,9 +253,7 @@ export const ModalFooter: React.FC<ModalFooterProps> = ({
   children,
   className,
 }) => (
-  <div className={cn('flex justify-end space-x-2', className)}>
-    {children}
-  </div>
+  <div className={cn("flex justify-end space-x-2", className)}>{children}</div>
 );
 
 export interface ModalActionsProps {
@@ -228,7 +261,7 @@ export interface ModalActionsProps {
   onCancel: () => void;
   confirmText?: string;
   cancelText?: string;
-  confirmVariant?: VariantProps<typeof buttonVariants>['variant'];
+  confirmVariant?: VariantProps<typeof buttonVariants>["variant"];
   confirmDisabled?: boolean;
   confirmLoading?: boolean;
   className?: string;
@@ -237,14 +270,14 @@ export interface ModalActionsProps {
 export const ModalActions: React.FC<ModalActionsProps> = ({
   onConfirm,
   onCancel,
-  confirmText = 'Confirm',
-  cancelText = 'Cancel',
-  confirmVariant = 'default',
+  confirmText = "Confirm",
+  cancelText = "Cancel",
+  confirmVariant = "default",
   confirmDisabled = false,
   confirmLoading = false,
   className,
 }) => (
-  <div className={cn('flex justify-end space-x-2', className)}>
+  <div className={cn("flex justify-end space-x-2", className)}>
     <Button variant="outline" onClick={onCancel}>
       {cancelText}
     </Button>
@@ -253,7 +286,7 @@ export const ModalActions: React.FC<ModalActionsProps> = ({
       onClick={onConfirm}
       disabled={confirmDisabled || confirmLoading}
     >
-      {confirmLoading ? 'Loading...' : confirmText}
+      {confirmLoading ? "Loading..." : confirmText}
     </Button>
   </div>
 );

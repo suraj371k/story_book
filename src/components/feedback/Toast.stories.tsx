@@ -152,6 +152,14 @@ export const WithLongTitle: Story = {
   },
 };
 
+export const NewToast: Story = {
+  args: {
+    variant: 'neutral',
+    title: 'This is a very long toast title that might wrap onto multiple lines',
+    description: 'The description is also quite detailed and provides more information about the toast message.',
+  },
+};
+
 export const ToastDemo: StoryObj = {
   render: function ToastExample() {
     // Return a component that uses the toast context
